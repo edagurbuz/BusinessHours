@@ -1,5 +1,5 @@
 import datetime
-
+import holidays
 
 class BusinessHours:
 
@@ -32,6 +32,8 @@ class BusinessHours:
             full_days = 0
             if self.is_weekend(dt_start):
                 return 0
+	    	elif self.is_holiday(dt_start):
+                return 0
             else:
                 if dt_start.hour < self.worktiming[0]:
                     # set start time to opening hour
@@ -59,7 +61,7 @@ class BusinessHours:
             # start and ends on different days
             current_day = dt_start  # marker for counting workdays
             while not current_day.date() == dt_end.date():
-                if not self.is_weekend(current_day):
+                if not self.is_weekend(current_day) and not self.is_holiday(current_day):
                     if current_day == dt_start:
                         # increment hours of first day
                         if current_day.hour < self.worktiming[0]:
@@ -82,7 +84,7 @@ class BusinessHours:
                         worktime_in_seconds += self.day_minutes*60
                 current_day += datetime.timedelta(days=1)  # next day
             # Time on the last day
-            if not self.is_weekend(dt_end):
+            if not self.is_weekend(dt_end) and not self.is_holiday(dt_end):
                 if dt_end.hour >= self.worktiming[1]:  # finish after close
                     # Add a full day
                     worktime_in_seconds += self.day_minutes*60
@@ -106,4 +108,12 @@ class BusinessHours:
         for weekend in self.weekends:
             if datetime.isoweekday() == weekend:
                 return True
+        return False
+
+    def is_holiday(self, datetime):
+		"""
+        Returns True if datetime lands on a public holiday in Turkey.
+        """
+		if datetime in holidays.Turkey():
+            return True
         return False
