@@ -32,7 +32,7 @@ class BusinessHours:
             full_days = 0
             if self.is_weekend(dt_start):
                 return 0
-			elif self.is_holiday(dt_start):
+	    elif self.is_holiday(dt_start):
                 return 0
             else:
                 if dt_start.hour < self.worktiming[0]:
@@ -111,9 +111,9 @@ class BusinessHours:
         return False
 
     def is_holiday(self, datetime):
-		"""
+	"""
         Returns True if datetime lands on a public holiday in Turkey.
         """
-		if datetime in holidays.Turkey():
+	if datetime in holidays.Turkey():
             return True
         return False
